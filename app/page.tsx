@@ -1,16 +1,16 @@
-import Image from "next/image";
+"use client";
+import LoginButton from "./components/loginButton";
 
 export default function Home() {
   return (
-    <div className="font-sans grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20">
-      <main className="flex flex-col gap-[32px] row-start-2 items-center sm:items-start">
-        <div>
-          <h1>Sign in</h1>
+    <div className="font-sans grid grid-rows-[1fr_auto] min-h-screen">
+      <main className="flex flex-col gap-[32px] row-start-1 items-center sm:items-start w-full">
+        <div className="w-full">
+          <h1>Create, add, and share your favourite recipes</h1>
+          <h1>Sign in to get started</h1>
+          <LoginButton />
         </div>
       </main>
-      <footer className="row-start-3 flex gap-[24px] flex-wrap items-center justify-center">
-        <h1>Inge Bothma</h1>
-      </footer>
     </div>
   );
 }
