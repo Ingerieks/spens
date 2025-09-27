@@ -28,8 +28,8 @@ export default function RootLayout({
     <html lang="en">
       <body>
         <header>
-          <div className="flex flex-row justify-between items-center w-full py-2">
-            <h1 className="px-4 text-3xl font-bold">Happie</h1>
+          <div className="flex flex-row justify-end items-center w-full pt-6">
+            {/*<h1 className="px-4 text-3xl font-bold">Happie</h1>*/}
             <HamburgerMenu />
           </div>
         </header>
