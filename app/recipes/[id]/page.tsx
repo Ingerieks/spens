@@ -4,9 +4,9 @@ import { useParams } from "next/navigation";
 import { recipes } from "@/mockData/recipes";
 import { useState } from "react";
 import {
-  ShoppingBagOutlined,
   EditOutlined,
   ArrowBackOutlined,
+  ShoppingCartOutlined,
 } from "@mui/icons-material";
 import Link from "next/link";
 export default function RecipeDetailPage() {
@@ -48,7 +48,7 @@ export default function RecipeDetailPage() {
             <div>
               <div className="flex flex-row my-4">
                 <div className="mx-2">
-                  <ShoppingBagOutlined style={{ color: "#b8b8b8ff" }} />
+                  <ShoppingCartOutlined style={{ color: "#b8b8b8ff" }} />
                 </div>
                 <div>
                   <EditOutlined style={{ color: "#b8b8b8ff" }} />
