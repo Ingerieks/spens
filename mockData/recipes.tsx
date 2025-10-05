@@ -24,7 +24,7 @@ export const recipes = [
   },
   {
     _id: 123,
-    recipeName: "Italian Sauage Pasta",
+    recipeName: "Italian Sausage Pasta",
     labels: ["unhealthy"],
     shared: false,
     groceries: true,
@@ -59,50 +59,40 @@ export const mealPlan = [
     id: 1,
     week: "Week 1",
     day: "Monday",
-    recipe: "Tomato Pasta",
+    recipe: ["Tomato Pasta"],
   },
   {
     id: 2,
     week: "Week 1",
     day: "Tuesday",
-    recipe: "Beef and Bacon Burgers",
+    recipe: ["Couscous salad", "Beef and Bacon Burgers"],
   },
   {
     id: 3,
     week: "Week 1",
     day: "Thursday",
-    recipe: "Italian Sausage Pasta",
+    recipe: ["cheese and tomato sandwich", "Italian Sausage Pasta"],
   },
   {
     id: 2,
     week: "Week 2",
     day: "Monday",
-    recipe: "Chicken Burgers",
+    recipe: ["Chicken Burgers"],
   },
 ];
 
-export const groceries = [
-  {
-    id: 10,
-    groceryList: [
-      "3 tomatoes",
-      "2 blocks feta cheese",
-      "garlic (2)",
-      "tagliatelle",
-      "italian sausage",
-      "200ml cream",
-      "burger buns",
-      "pesto",
-      "bacon",
-      "beef mince",
-      "cheddar cheese",
-      "mayonnaise",
-      "smoked paprika",
-    ],
-    accessList: [
-      {
-        userEmail: ["jbothma@gmail.com"],
-      },
-    ],
-  },
-];
+export const groceries = {
+  id: 10,
+  groceryList: [
+    "3 tomatoes",
+    "2 blocks feta cheese",
+    "garlic (2)",
+    "tagliatelle",
+    "italian sausage",
+  ],
+  accessList: [
+    {
+      userEmail: ["jbothma@gmail.com"],
+    },
+  ],
+};
