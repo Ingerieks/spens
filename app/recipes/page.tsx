@@ -14,6 +14,7 @@ import {
 import Link from "next/link";
 import MealPlan from "../components/mealplan";
 import { Tooltip } from "@mui/material";
+import GroceryList from "../components/groceries";
 
 export default function RecipePage() {
   const { data: session, status } = useSession();
@@ -34,7 +35,7 @@ export default function RecipePage() {
       <div className="my-4 mx-2">
         <button
           className={`rounded-xs p-2 ${
-            tab === "Recipes" ? "bg-yellow-400" : "border border-gray-200"
+            tab === "Recipes" ? "bg-gray-100" : "border border-gray-200"
           }`}
           onClick={() => setTab("Recipes")}
         >
@@ -42,11 +43,19 @@ export default function RecipePage() {
         </button>
         <button
           className={`rounded-xs p-2 mx-2 ${
-            tab === "MealPlan" ? "bg-yellow-400" : "border border-gray-200"
+            tab === "MealPlan" ? "bg-gray-100" : "border border-gray-200"
           }`}
           onClick={() => setTab("MealPlan")}
         >
           Meal Plan
+        </button>
+        <button
+          className={`rounded-xs p-2 ${
+            tab === "Groceries" ? "bg-gray-100" : "border border-gray-200"
+          }`}
+          onClick={() => setTab("Groceries")}
+        >
+          Groceries
         </button>
       </div>
       {tab === "Recipes" && (
@@ -59,20 +68,23 @@ export default function RecipePage() {
                   <div className="flex flex-row">
                     {recipe.groceries && (
                       <div className="mx-2">
-                        <ShoppingCartOutlined style={{ color: "#b8b8b8ff" }} />
+                        <ShoppingCartOutlined style={{ color: "#facc15" }} />
+                        {/* <p className="bg-yellow-400 px-2 rounded-xs text-xs">
+                          groceries
+                        </p> */}
                       </div>
                     )}
-                    {recipe.shared && (
+                    {recipe.mealPlan && (
                       <div className="mx-2">
-                        <PeopleAltOutlined style={{ color: "#b8b8b8ff" }} />
+                        <PlaylistAddCheckOutlined
+                          style={{ color: "#facc15" }}
+                        />
+                        {/* <p className="bg-yellow-400 px-2 rounded-xs text-xs">
+                          meal plan
+                        </p> */}
                       </div>
                     )}
                   </div>
-                  {recipe.mealPlan && (
-                    <div className="text-xs text-gray-300">
-                      <h1>Added to meal plan</h1>
-                    </div>
-                  )}
                 </div>
                 {/* <div className="flex flex-row">
               {recipe.labels.map((label, index) => (
@@ -92,6 +104,11 @@ export default function RecipePage() {
       {tab === "MealPlan" && (
         <>
           <MealPlan />
+        </>
+      )}
+      {tab === "Groceries" && (
+        <>
+          <GroceryList />
         </>
       )}
     </div>
