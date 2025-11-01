@@ -11,7 +11,7 @@ export default function GroceryList() {
       {groceries.groceryList.map((list, index) => (
         <div
           key={index}
-          className="flex items-center my-4 border-b border-gray-200"
+          className="flex items-center my-4 border-b border-gray-100"
         >
           <button className="p-2">{list}</button>
         </div>

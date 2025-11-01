@@ -14,7 +14,7 @@ export default function MealPlan() {
         {mealPlan.map((item, index) => (
           <div key={index}>
             {item.week === "Week 1" && (
-              <div className="border border-gray-200 rounded-xs p-2 my-2">
+              <div className="border border-gray-100 rounded-xs p-2 my-2">
                 <div className="flex flex-row justify-between">
                   <h1>{item.day}</h1>
                   <button
@@ -46,7 +46,7 @@ export default function MealPlan() {
         {mealPlan.map((item, index) => (
           <div key={index}>
             {item.week === "Week 2" && (
-              <div className="border border-gray-200 rounded-xs p-2 my-2">
+              <div className="border border-gray-100 rounded-xs p-2 my-2">
                 <div className="flex flex-row justify-between">
                   <h1>{item.day}</h1>
                   <button

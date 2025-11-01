@@ -8,6 +8,7 @@ import {
   ArrowBackOutlined,
   ShoppingCartOutlined,
   PlaylistAddOutlined,
+  ViewWeekOutlined,
 } from "@mui/icons-material";
 import Link from "next/link";
 import { Box, Modal } from "@mui/material";
@@ -50,15 +51,15 @@ export default function RecipeDetailPage() {
     <main className="mx-2 mt-4">
       <Link href="/recipes">
         <div className="mb-4">
-          <ArrowBackOutlined style={{ color: "#b8b8b8ff" }} />
+          <ArrowBackOutlined fontSize="large" style={{ color: "#b8b8b8ff" }} />
         </div>
       </Link>
-      <div className="p-2 border border-gray-200 rounded-xs">
+      <div className="p-2 border border-gray-100 rounded-xs">
         <h1 className="text-xl font-bold">{selectedRecipe?.recipeName}</h1>
         <div className="my-4">
           <button
             className={`rounded-xs p-2 ${
-              tab === "Ingredients" ? "bg-yellow-400" : "border border-gray-200"
+              tab === "Ingredients" ? "bg-yellow-300" : "border border-gray-100"
             }`}
             onClick={() => setTab("Ingredients")}
           >
@@ -67,8 +68,8 @@ export default function RecipeDetailPage() {
           <button
             className={`rounded-xs p-2 mx-2 ${
               tab === "Instructions"
-                ? "bg-yellow-400"
-                : "border border-gray-200"
+                ? "bg-yellow-300"
+                : "border border-gray-100"
             }`}
             onClick={() => setTab("Instructions")}
           >
@@ -88,9 +89,7 @@ export default function RecipeDetailPage() {
                 </div>
                 <div className="mx-3">
                   <button onClick={() => setMealPlanModal(true)}>
-                    <PlaylistAddOutlined
-                      style={{ color: addedToList ? "#facc15" : "#b8b8b8ff" }}
-                    />
+                    <ViewWeekOutlined style={{ color: "#b8b8b8ff" }} />
                   </button>
                 </div>
                 <div className="mx-3">

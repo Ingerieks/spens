@@ -17,7 +17,7 @@ export default function SubmitButton({ text, type }: SubmitButtonProps) {
         className={`px-4 py-2 rounded-xs ${
           type === "submit"
             ? "bg-yellow-400 border border-yellow-400"
-            : "bg-white border border-gray-200"
+            : "bg-white border border-gray-100"
         }`}
       >
         {text}
