@@ -5,12 +5,10 @@ import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { recipes, mealPlan } from "@/mockData/recipes";
 import {
-  PeopleAltOutlined,
   ShoppingCartOutlined,
-  PlaylistAddOutlined,
-  PlaylistAddCheckOutlined,
   AddOutlined,
   ViewWeekOutlined,
+  DeleteOutline,
 } from "@mui/icons-material";
 import Link from "next/link";
 import MealPlan from "../components/mealplan";
@@ -31,7 +29,6 @@ export default function RecipePage() {
       try {
         const res = await fetch("/api/recipes");
         const data = await res.json();
-        console.log("recipe data", data);
         setAllRecipes(data);
       } catch (error) {
         console.error("Error fetching recipes:", error);
@@ -41,11 +38,29 @@ export default function RecipePage() {
     };
 
     fetchRecipes();
-  }, []);
+  }, [tab]);
 
   if (status === "loading") {
     return <p>Loading...</p>;
   }
+
+  function resetToHome() {
+    setTab("Recipes");
+  }
+
+  const handleDelete = async (id: number) => {
+    if (!confirm("Are you sure you want to delete this recipe?")) return;
+
+    const res = await fetch(`/api/recipes/${id}`, {
+      method: "DELETE",
+    });
+
+    if (res.ok) {
+      setAllRecipes((prev) => prev.filter((r) => r.id !== id));
+    } else {
+      console.error("Failed to delete recipe");
+    }
+  };
 
   return (
     <div className="mt-4 ">
@@ -83,29 +98,39 @@ export default function RecipePage() {
             </button>
           </div>
           {allRecipes.map((recipe, index) => (
-            <Link key={index} href={`/recipes/${recipe.id}`} className="">
-              <div className="border border-gray-100 rounded-xs p-2 m-2">
+            <div
+              key={index}
+              className="border border-gray-100 rounded-xs p-2 m-2"
+            >
+              <Link href={`/recipes/${recipe.id}`} className="">
                 <h1 className="text-lg">{recipe.recipeName}</h1>
-                <div className="mt-2 flex flex-row justify-between">
-                  <div className="flex flex-row">
-                    <div className="mx-2">
-                      <ShoppingCartOutlined
-                        style={{
-                          color: recipe.groceries ? "#facc15" : "#e0e0e0ff",
-                        }}
-                      />
-                    </div>
-                    <div className="mx-2">
-                      <ViewWeekOutlined
-                        style={{
-                          color: recipe.mealPlan ? "#facc15" : "#e0e0e0ff",
-                        }}
-                      />
-                    </div>
+              </Link>
+              <div className="mt-2 flex flex-row justify-between">
+                <div className="flex flex-row">
+                  <div className="mx-2">
+                    <ShoppingCartOutlined
+                      style={{
+                        color: recipe.groceries ? "#facc15" : "#e0e0e0ff",
+                      }}
+                    />
+                  </div>
+                  <div className="mx-2">
+                    <ViewWeekOutlined
+                      style={{
+                        color: recipe.mealPlan ? "#facc15" : "#e0e0e0ff",
+                      }}
+                    />
                   </div>
                 </div>
+                <div className="mx-2" onClick={() => handleDelete(recipe.id)}>
+                  <DeleteOutline
+                    style={{
+                      color: "#e0e0e0ff",
+                    }}
+                  />
+                </div>
               </div>
-            </Link>
+            </div>
           ))}
         </>
       )}
@@ -121,7 +146,7 @@ export default function RecipePage() {
       )}
       {tab === "NewRecipe" && (
         <>
-          <NewRecipe />
+          <NewRecipe resetToHome={resetToHome} />
         </>
       )}
     </div>

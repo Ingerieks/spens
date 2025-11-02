@@ -6,6 +6,7 @@ export interface IRecipes {
   groceries: boolean;
   mealPlan: boolean;
   //category: string[];
+  ingredients: string[];
   instructions: string;
   accesslist: [
     {

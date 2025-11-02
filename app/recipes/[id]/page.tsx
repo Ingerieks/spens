@@ -2,7 +2,7 @@
 
 import { useParams } from "next/navigation";
 import { recipes } from "@/mockData/recipes";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import {
   EditOutlined,
   ArrowBackOutlined,
@@ -13,15 +13,12 @@ import {
 import Link from "next/link";
 import { Box, Modal } from "@mui/material";
 import AddToMealPlan from "@/app/components/mealPlanModal";
+import { IRecipes } from "@/lib/interfaces/IRecipes";
 export default function RecipeDetailPage() {
   const { id } = useParams();
   const [tab, setTab] = useState("Ingredients");
-  const selectedRecipe = recipes.find((recipe) => recipe._id.toString() === id);
-  const [addedToList, setAddedToList] = useState(selectedRecipe?.groceries);
+  const [selectedRecipe, setSelectedRecipe] = useState<IRecipes | null>(null);
   const [mealPlanModal, setMealPlanModal] = useState(false);
-  const [addedGroceries, setAddedGroceries] = useState<string[] | undefined>(
-    selectedRecipe?.ingredients
-  );
 
   const modalStyle = {
     position: "absolute" as const,
@@ -35,17 +32,29 @@ export default function RecipeDetailPage() {
     p: 4,
   };
 
-  function addGroceries() {
-    console.log(
-      "Add these groceries to the grocery list in the db:",
-      addedGroceries
-    );
-    setAddedToList(true);
-  }
+  useEffect(() => {
+    const fetchRecipes = async () => {
+      try {
+        const res = await fetch(`/api/recipes/${id}`);
+        const data = await res.json();
+        setSelectedRecipe(data);
+      } catch (error) {
+        console.error("Error fetching recipes:", error);
+      } finally {
+      }
+    };
 
-  function closeModal() {
-    setMealPlanModal(false);
-  }
+    fetchRecipes();
+  }, []);
+
+  // async function addGroceries() {
+  //   const res = await fetch("/api/recipes", {
+  //     method: "POST",
+  //     headers: { "Content-Type": "application/json" },
+  //     body: JSON.stringify(recipeData),
+  //   });
+  //   const data = await res.json();
+  // }
 
   return (
     <main className="mx-2 mt-4">
@@ -81,9 +90,13 @@ export default function RecipeDetailPage() {
             <div>
               <div className="flex flex-row my-6">
                 <div className="mx-3">
-                  <button onClick={() => addGroceries()}>
+                  <button>
                     <ShoppingCartOutlined
-                      style={{ color: addedToList ? "#facc15" : "#b8b8b8ff" }}
+                      style={{
+                        color: selectedRecipe?.groceries
+                          ? "#facc15"
+                          : "#b8b8b8ff",
+                      }}
                     />
                   </button>
                 </div>
@@ -117,11 +130,6 @@ export default function RecipeDetailPage() {
         ) : (
           <></>
         )}
-        <Modal open={mealPlanModal} onClose={closeModal}>
-          <Box sx={modalStyle}>
-            <AddToMealPlan />
-          </Box>
-        </Modal>
       </div>
     </main>
   );

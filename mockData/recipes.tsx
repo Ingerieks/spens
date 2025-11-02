@@ -96,3 +96,10 @@ export const groceries = {
     },
   ],
 };
+
+const users = [
+  {
+    email: "ingebthm@gmail.com",
+    password: 123,
+  },
+];
