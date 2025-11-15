@@ -1,14 +1,30 @@
 "use client";
 
-import MenuOutlinedIcon from "@mui/icons-material/MenuOutlined";
-import { groceries } from "@/mockData/recipes";
-import { useState } from "react";
-import { KeyboardArrowDown } from "@mui/icons-material";
+import { useEffect, useState } from "react";
 
 export default function GroceryList() {
+  const [loading, setLoading] = useState(true);
+  const [allGroceries, setAllGroceries] = useState([]);
+
+  useEffect(() => {
+    const fetchGroceries = async () => {
+      try {
+        const res = await fetch("/api/groceries");
+        const data = await res.json();
+        setAllGroceries(data[0].groceryList);
+      } catch (error) {
+        console.error("Error fetching recipes:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchGroceries();
+  }, []);
+
   return (
     <div className="px-4 my-6">
-      {groceries.groceryList.map((list, index) => (
+      {allGroceries.map((list, index) => (
         <div
           key={index}
           className="flex items-center my-4 border-b border-gray-100"

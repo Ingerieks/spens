@@ -16,12 +16,15 @@ import { Tooltip } from "@mui/material";
 import GroceryList from "../components/groceries";
 import NewRecipe from "../components/newRecipe";
 import { IRecipes } from "@/lib/interfaces/IRecipes";
+import { addGroceries, deletRecipe } from "./helpers";
 
 export default function RecipePage() {
   const { data: session, status } = useSession();
   const [tab, setTab] = useState("Recipes");
   const [loading, setLoading] = useState(true);
   const [allRecipes, setAllRecipes] = useState<IRecipes[]>([]);
+  const [adding, setAdding] = useState(false);
+  const [error, setError] = useState("");
   const router = useRouter();
 
   useEffect(() => {
@@ -49,17 +52,27 @@ export default function RecipePage() {
   }
 
   const handleDelete = async (id: number) => {
-    if (!confirm("Are you sure you want to delete this recipe?")) return;
-
-    const res = await fetch(`/api/recipes/${id}`, {
-      method: "DELETE",
-    });
-
-    if (res.ok) {
+    const updated = await deletRecipe(id);
+    if (updated?.message === "success") {
       setAllRecipes((prev) => prev.filter((r) => r.id !== id));
     } else {
       console.error("Failed to delete recipe");
     }
+  };
+
+  const handleAddToGroceries = async (
+    ingredients: string[],
+    ingredientsAdded: boolean,
+    recipeId: number
+  ) => {
+    setAdding(true);
+
+    const added = await addGroceries({
+      ingredients,
+      ingredientsAdded,
+      recipeId,
+    });
+    setAdding(false);
   };
 
   return (
@@ -108,11 +121,21 @@ export default function RecipePage() {
               <div className="mt-2 flex flex-row justify-between">
                 <div className="flex flex-row">
                   <div className="mx-2">
-                    <ShoppingCartOutlined
-                      style={{
-                        color: recipe.groceries ? "#facc15" : "#e0e0e0ff",
-                      }}
-                    />
+                    <button
+                      onClick={() =>
+                        handleAddToGroceries(
+                          recipe.ingredients,
+                          recipe.groceries,
+                          recipe.id
+                        )
+                      }
+                    >
+                      <ShoppingCartOutlined
+                        style={{
+                          color: recipe.groceries ? "#facc15" : "#e0e0e0ff",
+                        }}
+                      />
+                    </button>
                   </div>
                   <div className="mx-2">
                     <ViewWeekOutlined

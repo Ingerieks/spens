@@ -47,15 +47,6 @@ export default function RecipeDetailPage() {
     fetchRecipes();
   }, []);
 
-  // async function addGroceries() {
-  //   const res = await fetch("/api/recipes", {
-  //     method: "POST",
-  //     headers: { "Content-Type": "application/json" },
-  //     body: JSON.stringify(recipeData),
-  //   });
-  //   const data = await res.json();
-  // }
-
   return (
     <main className="mx-2 mt-4">
       <Link href="/recipes">

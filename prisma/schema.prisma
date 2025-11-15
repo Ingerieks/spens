@@ -31,7 +31,13 @@ model Recipe {
   groceries    Boolean
   mealPlan     Boolean
   ingredients  String[]
-  instructions String
+  instructions String?
   createdAt    DateTime @default(now())
 }
 
+model Grocery {
+  id           Int      @id @default(autoincrement())
+  groceryList  String[]
+  accessList   String[]
+  createdAt    DateTime @default(now())
+}
