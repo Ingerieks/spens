@@ -36,8 +36,15 @@ model Recipe {
 }
 
 model Grocery {
-  id           Int      @id @default(autoincrement())
-  groceryList  String[]
-  accessList   String[]
-  createdAt    DateTime @default(now())
+  id          Int           @id @default(autoincrement())
+  createdAt   DateTime      @default(now())
+  items       GroceryItem[]
+}
+
+model GroceryItem {
+  id          Int       @id @default(autoincrement())
+  name        String
+  completed   Boolean   @default(false)
+  groceryId   Int
+  grocery     Grocery   @relation(fields: [groceryId], references: [id])
 }

@@ -6,10 +6,10 @@ const prisma = new PrismaClient();
 
 export async function GET() {
   try {
-    const groceries = await prisma.grocery.findMany();
-    return NextResponse.json(groceries, { status: 200 });
+    const groceryItems = await prisma.groceryItem.findMany();
+    return NextResponse.json(groceryItems, { status: 200 });
   } catch (error) {
-    console.error("Error fetching groceries:", error);
+    console.error(error);
     return NextResponse.json(
       { error: "Failed to fetch groceries" },
       { status: 500 }
@@ -19,8 +19,7 @@ export async function GET() {
 
 export async function POST(req: NextRequest) {
   try {
-    const body = await req.json();
-    const { ingredients, recipeId, ingredientsAdded } = body;
+    const { ingredients, recipeId, ingredientsAdded } = await req.json();
 
     if (!ingredients || !Array.isArray(ingredients)) {
       return NextResponse.json(
@@ -29,63 +28,50 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    const existing = await prisma.grocery.findFirst();
+    let grocery = await prisma.grocery.findFirst();
+    if (!grocery) {
+      grocery = await prisma.grocery.create({ data: {} });
+    }
 
-    let updatedGroceries;
+    const groceryId = grocery.id;
+
     if (!ingredientsAdded) {
-      if (existing) {
-        const mergedList = Array.from(
-          new Set([...existing.groceryList, ...ingredients])
-        );
-        updatedGroceries = await prisma.grocery.update({
-          where: { id: existing.id },
-          data: { groceryList: mergedList },
-        });
-      } else {
-        updatedGroceries = await prisma.grocery.create({
-          data: { groceryList: ingredients, accessList: [] },
-        });
-      }
-      if (updatedGroceries) {
-        await prisma.recipe.update({
-          where: { id: recipeId },
-          data: { groceries: true },
-        });
-      }
-      return NextResponse.json(updatedGroceries, { status: 200 });
-    } else {
-      if (!existing) {
-        return NextResponse.json(
-          { error: "No grocery list found" },
-          { status: 404 }
-        );
-      }
-      let updatedList = [...existing.groceryList];
-      for (const item of ingredients) {
-        const index = updatedList.findIndex(
-          (i) => i.toLowerCase() === item.toLowerCase()
-        );
-        if (index !== -1) {
-          updatedList.splice(index, 1);
-        }
-      }
+      const ingredientObjects = ingredients.map((name: string) => ({
+        name: name.trim(),
+        completed: false,
+        groceryId,
+      }));
 
-      const updatedGroceries = await prisma.grocery.update({
-        where: { id: existing.id },
-        data: { groceryList: updatedList },
+      await prisma.groceryItem.createMany({ data: ingredientObjects });
+
+      await prisma.recipe.update({
+        where: { id: recipeId },
+        data: { groceries: true },
       });
-      if (updatedGroceries) {
-        await prisma.recipe.update({
-          where: { id: recipeId },
-          data: { groceries: false },
-        });
-      }
-      return NextResponse.json(updatedGroceries, { status: 200 });
+
+      return NextResponse.json({ message: "Added groceries" }, { status: 200 });
+    } else {
+      await prisma.groceryItem.deleteMany({
+        where: {
+          groceryId,
+          name: { in: ingredients.map((i: string) => i.trim()) },
+        },
+      });
+
+      await prisma.recipe.update({
+        where: { id: recipeId },
+        data: { groceries: false },
+      });
+
+      return NextResponse.json(
+        { message: "Removed groceries" },
+        { status: 200 }
+      );
     }
   } catch (error) {
-    console.error("Error adding groceries:", error);
+    console.error("Error toggling groceries:", error);
     return NextResponse.json(
-      { error: "Failed to add groceries" },
+      { error: "Failed to update groceries" },
       { status: 500 }
     );
   }
