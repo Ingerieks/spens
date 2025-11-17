@@ -17,6 +17,13 @@ import GroceryList from "../components/groceries";
 import NewRecipe from "../components/newRecipe";
 import { IRecipes } from "@/lib/interfaces/IRecipes";
 import { addGroceries, deletRecipe } from "./helpers";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+
+interface IAddGroceries {
+  recipeId: number;
+  ingredients: string[];
+  ingredientsAdded: boolean;
+}
 
 export default function RecipePage() {
   const { data: session, status } = useSession();
@@ -24,8 +31,37 @@ export default function RecipePage() {
   const [loading, setLoading] = useState(true);
   const [allRecipes, setAllRecipes] = useState<IRecipes[]>([]);
   const [adding, setAdding] = useState(false);
-  const [error, setError] = useState("");
-  const router = useRouter();
+
+  const queryClient = useQueryClient();
+
+  const addToGroceriesMutation = useMutation<
+    "Added to groceries!" | "Failed to add to groceries" | undefined,
+    unknown,
+    IAddGroceries
+  >({
+    mutationFn: addGroceries,
+    onMutate: async ({ recipeId }) => {
+      await queryClient.cancelQueries({ queryKey: ["recipes"] });
+
+      const previousRecipes = allRecipes;
+
+      setAllRecipes((prev) =>
+        prev.map((r) =>
+          r.id === recipeId ? { ...r, groceries: !r.groceries } : r
+        )
+      );
+
+      return { previousRecipes };
+    },
+    onError: (_err, _variables, context: any) => {
+      if (context?.previousRecipes) {
+        setAllRecipes(context.previousRecipes);
+      }
+    },
+    onSettled: () => {
+      queryClient.invalidateQueries({ queryKey: ["recipes"] });
+    },
+  });
 
   useEffect(() => {
     const fetchRecipes = async () => {
@@ -60,19 +96,18 @@ export default function RecipePage() {
     }
   };
 
-  const handleAddToGroceries = async (
+  const handleAddToGroceries = (
     ingredients: string[],
     ingredientsAdded: boolean,
     recipeId: number
   ) => {
     setAdding(true);
-
-    const added = await addGroceries({
-      ingredients,
-      ingredientsAdded,
-      recipeId,
-    });
-    setAdding(false);
+    addToGroceriesMutation.mutate(
+      { recipeId, ingredients, ingredientsAdded },
+      {
+        onSettled: () => setAdding(false),
+      }
+    );
   };
 
   return (
